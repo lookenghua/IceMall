@@ -41,9 +41,9 @@ type User struct {
 	// Phone holds the value of the "phone" field.
 	// 手机号
 	Phone *string `json:"phone,omitempty"`
-	// Email holds the value of the "email" field.
-	// 邮箱
-	Email *string `json:"email,omitempty"`
+	// Score holds the value of the "score" field.
+	// 积分
+	Score int `json:"score,omitempty"`
 	// Token holds the value of the "token" field.
 	// 登录token
 	Token *string `json:"token,omitempty"`
@@ -54,9 +54,9 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID:
+		case user.FieldID, user.FieldScore:
 			values[i] = new(sql.NullInt64)
-		case user.FieldUsername, user.FieldRole, user.FieldPassword, user.FieldAvatar, user.FieldPhone, user.FieldEmail, user.FieldToken:
+		case user.FieldUsername, user.FieldRole, user.FieldPassword, user.FieldAvatar, user.FieldPhone, user.FieldToken:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -132,12 +132,11 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 				u.Phone = new(string)
 				*u.Phone = value.String
 			}
-		case user.FieldEmail:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field email", values[i])
+		case user.FieldScore:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field score", values[i])
 			} else if value.Valid {
-				u.Email = new(string)
-				*u.Email = value.String
+				u.Score = int(value.Int64)
 			}
 		case user.FieldToken:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -196,10 +195,8 @@ func (u *User) String() string {
 		builder.WriteString(", phone=")
 		builder.WriteString(*v)
 	}
-	if v := u.Email; v != nil {
-		builder.WriteString(", email=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString(", score=")
+	builder.WriteString(fmt.Sprintf("%v", u.Score))
 	if v := u.Token; v != nil {
 		builder.WriteString(", token=")
 		builder.WriteString(*v)

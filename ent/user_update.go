@@ -134,23 +134,30 @@ func (uu *UserUpdate) ClearPhone() *UserUpdate {
 	return uu
 }
 
-// SetEmail sets the "email" field.
-func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
-	uu.mutation.SetEmail(s)
+// SetScore sets the "score" field.
+func (uu *UserUpdate) SetScore(i int) *UserUpdate {
+	uu.mutation.ResetScore()
+	uu.mutation.SetScore(i)
 	return uu
 }
 
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableEmail(s *string) *UserUpdate {
-	if s != nil {
-		uu.SetEmail(*s)
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableScore(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetScore(*i)
 	}
 	return uu
 }
 
-// ClearEmail clears the value of the "email" field.
-func (uu *UserUpdate) ClearEmail() *UserUpdate {
-	uu.mutation.ClearEmail()
+// AddScore adds i to the "score" field.
+func (uu *UserUpdate) AddScore(i int) *UserUpdate {
+	uu.mutation.AddScore(i)
+	return uu
+}
+
+// ClearScore clears the value of the "score" field.
+func (uu *UserUpdate) ClearScore() *UserUpdate {
+	uu.mutation.ClearScore()
 	return uu
 }
 
@@ -350,17 +357,24 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldPhone,
 		})
 	}
-	if value, ok := uu.mutation.Email(); ok {
+	if value, ok := uu.mutation.Score(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldEmail,
+			Column: user.FieldScore,
 		})
 	}
-	if uu.mutation.EmailCleared() {
+	if value, ok := uu.mutation.AddedScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldScore,
+		})
+	}
+	if uu.mutation.ScoreCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldEmail,
+			Type:   field.TypeInt,
+			Column: user.FieldScore,
 		})
 	}
 	if value, ok := uu.mutation.Token(); ok {
@@ -501,23 +515,30 @@ func (uuo *UserUpdateOne) ClearPhone() *UserUpdateOne {
 	return uuo
 }
 
-// SetEmail sets the "email" field.
-func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
-	uuo.mutation.SetEmail(s)
+// SetScore sets the "score" field.
+func (uuo *UserUpdateOne) SetScore(i int) *UserUpdateOne {
+	uuo.mutation.ResetScore()
+	uuo.mutation.SetScore(i)
 	return uuo
 }
 
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableEmail(s *string) *UserUpdateOne {
-	if s != nil {
-		uuo.SetEmail(*s)
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableScore(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetScore(*i)
 	}
 	return uuo
 }
 
-// ClearEmail clears the value of the "email" field.
-func (uuo *UserUpdateOne) ClearEmail() *UserUpdateOne {
-	uuo.mutation.ClearEmail()
+// AddScore adds i to the "score" field.
+func (uuo *UserUpdateOne) AddScore(i int) *UserUpdateOne {
+	uuo.mutation.AddScore(i)
+	return uuo
+}
+
+// ClearScore clears the value of the "score" field.
+func (uuo *UserUpdateOne) ClearScore() *UserUpdateOne {
+	uuo.mutation.ClearScore()
 	return uuo
 }
 
@@ -741,17 +762,24 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Column: user.FieldPhone,
 		})
 	}
-	if value, ok := uuo.mutation.Email(); ok {
+	if value, ok := uuo.mutation.Score(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldEmail,
+			Column: user.FieldScore,
 		})
 	}
-	if uuo.mutation.EmailCleared() {
+	if value, ok := uuo.mutation.AddedScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldScore,
+		})
+	}
+	if uuo.mutation.ScoreCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldEmail,
+			Type:   field.TypeInt,
+			Column: user.FieldScore,
 		})
 	}
 	if value, ok := uuo.mutation.Token(); ok {

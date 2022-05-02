@@ -26,7 +26,6 @@ func CreateUser(data *CreateUserDto) (*ent.User, error) {
 		Role:     user.RoleUSER,
 		Avatar:   data.Avatar,
 		Phone:    &data.Phone,
-		Email:    &data.Email,
 	}
 	newUser, createErr := model.CreateUser(userInfo)
 	if createErr != nil {

@@ -116,16 +116,16 @@ func (uc *UserCreate) SetNillablePhone(s *string) *UserCreate {
 	return uc
 }
 
-// SetEmail sets the "email" field.
-func (uc *UserCreate) SetEmail(s string) *UserCreate {
-	uc.mutation.SetEmail(s)
+// SetScore sets the "score" field.
+func (uc *UserCreate) SetScore(i int) *UserCreate {
+	uc.mutation.SetScore(i)
 	return uc
 }
 
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uc *UserCreate) SetNillableEmail(s *string) *UserCreate {
-	if s != nil {
-		uc.SetEmail(*s)
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (uc *UserCreate) SetNillableScore(i *int) *UserCreate {
+	if i != nil {
+		uc.SetScore(*i)
 	}
 	return uc
 }
@@ -232,6 +232,10 @@ func (uc *UserCreate) defaults() {
 	if _, ok := uc.mutation.Avatar(); !ok {
 		v := user.DefaultAvatar
 		uc.mutation.SetAvatar(v)
+	}
+	if _, ok := uc.mutation.Score(); !ok {
+		v := user.DefaultScore
+		uc.mutation.SetScore(v)
 	}
 }
 
@@ -354,13 +358,13 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		})
 		_node.Phone = &value
 	}
-	if value, ok := uc.mutation.Email(); ok {
+	if value, ok := uc.mutation.Score(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldEmail,
+			Column: user.FieldScore,
 		})
-		_node.Email = &value
+		_node.Score = value
 	}
 	if value, ok := uc.mutation.Token(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

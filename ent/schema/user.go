@@ -32,7 +32,7 @@ func (User) Fields() []ent.Field {
 		field.String("password").Comment("密码").Optional().Nillable(),
 		field.String("avatar").Comment("头像").Default("/avatar/default.png"),
 		field.String("phone").Comment("手机号").Optional().Nillable(),
-		field.String("email").Comment("邮箱").Optional().Nillable(),
+		field.Int("score").Comment("积分").Optional().Default(0),
 		field.String("token").Comment("登录token").Optional().Nillable(),
 	}
 }

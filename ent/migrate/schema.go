@@ -9,6 +9,35 @@ import (
 )
 
 var (
+	// CaptchasColumns holds the columns for the "captchas" table.
+	CaptchasColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"REGISTER"}},
+		{Name: "phone", Type: field.TypeString},
+		{Name: "code", Type: field.TypeString},
+	}
+	// CaptchasTable holds the schema information for the "captchas" table.
+	CaptchasTable = &schema.Table{
+		Name:       "captchas",
+		Columns:    CaptchasColumns,
+		PrimaryKey: []*schema.Column{CaptchasColumns[0]},
+	}
+	// SystemConfigsColumns holds the columns for the "system_configs" table.
+	SystemConfigsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "rule", Type: field.TypeString, Unique: true},
+		{Name: "value", Type: field.TypeString},
+		{Name: "remark", Type: field.TypeString},
+	}
+	// SystemConfigsTable holds the schema information for the "system_configs" table.
+	SystemConfigsTable = &schema.Table{
+		Name:       "system_configs",
+		Columns:    SystemConfigsColumns,
+		PrimaryKey: []*schema.Column{SystemConfigsColumns[0]},
+	}
 	// UserColumns holds the columns for the "user" table.
 	UserColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -20,7 +49,7 @@ var (
 		{Name: "password", Type: field.TypeString, Nullable: true},
 		{Name: "avatar", Type: field.TypeString, Default: "/avatar/default.png"},
 		{Name: "phone", Type: field.TypeString, Nullable: true},
-		{Name: "email", Type: field.TypeString, Nullable: true},
+		{Name: "score", Type: field.TypeInt, Nullable: true, Default: 0},
 		{Name: "token", Type: field.TypeString, Nullable: true},
 	}
 	// UserTable holds the schema information for the "user" table.
@@ -31,6 +60,8 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CaptchasTable,
+		SystemConfigsTable,
 		UserTable,
 	}
 )

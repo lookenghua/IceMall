@@ -8,6 +8,32 @@ import (
 	"ice-mall/ent"
 )
 
+// The CaptchaFunc type is an adapter to allow the use of ordinary
+// function as Captcha mutator.
+type CaptchaFunc func(context.Context, *ent.CaptchaMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CaptchaFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CaptchaMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CaptchaMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The SystemConfigFunc type is an adapter to allow the use of ordinary
+// function as SystemConfig mutator.
+type SystemConfigFunc func(context.Context, *ent.SystemConfigMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SystemConfigFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SystemConfigMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SystemConfigMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

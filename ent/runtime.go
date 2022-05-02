@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"ice-mall/ent/captcha"
 	"ice-mall/ent/schema"
 	"ice-mall/ent/user"
 	"time"
@@ -12,6 +13,21 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	captchaMixin := schema.Captcha{}.Mixin()
+	captchaMixinFields0 := captchaMixin[0].Fields()
+	_ = captchaMixinFields0
+	captchaFields := schema.Captcha{}.Fields()
+	_ = captchaFields
+	// captchaDescCreatedAt is the schema descriptor for createdAt field.
+	captchaDescCreatedAt := captchaMixinFields0[1].Descriptor()
+	// captcha.DefaultCreatedAt holds the default value on creation for the createdAt field.
+	captcha.DefaultCreatedAt = captchaDescCreatedAt.Default.(time.Time)
+	// captchaDescUpdatedAt is the schema descriptor for updatedAt field.
+	captchaDescUpdatedAt := captchaMixinFields0[2].Descriptor()
+	// captcha.DefaultUpdatedAt holds the default value on creation for the updatedAt field.
+	captcha.DefaultUpdatedAt = captchaDescUpdatedAt.Default.(func() time.Time)
+	// captcha.UpdateDefaultUpdatedAt holds the default value on update for the updatedAt field.
+	captcha.UpdateDefaultUpdatedAt = captchaDescUpdatedAt.UpdateDefault.(func() time.Time)
 	userMixin := schema.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
 	_ = userMixinFields0
@@ -31,4 +47,8 @@ func init() {
 	userDescAvatar := userFields[3].Descriptor()
 	// user.DefaultAvatar holds the default value on creation for the avatar field.
 	user.DefaultAvatar = userDescAvatar.Default.(string)
+	// userDescScore is the schema descriptor for score field.
+	userDescScore := userFields[5].Descriptor()
+	// user.DefaultScore holds the default value on creation for the score field.
+	user.DefaultScore = userDescScore.Default.(int)
 }

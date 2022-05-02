@@ -9,6 +9,8 @@ import (
 
 	"ice-mall/ent/migrate"
 
+	"ice-mall/ent/captcha"
+	"ice-mall/ent/systemconfig"
 	"ice-mall/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -20,6 +22,10 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Captcha is the client for interacting with the Captcha builders.
+	Captcha *CaptchaClient
+	// SystemConfig is the client for interacting with the SystemConfig builders.
+	SystemConfig *SystemConfigClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -35,6 +41,8 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Captcha = NewCaptchaClient(c.config)
+	c.SystemConfig = NewSystemConfigClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -67,9 +75,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		User:   NewUserClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		Captcha:      NewCaptchaClient(cfg),
+		SystemConfig: NewSystemConfigClient(cfg),
+		User:         NewUserClient(cfg),
 	}, nil
 }
 
@@ -87,16 +97,18 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		User:   NewUserClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		Captcha:      NewCaptchaClient(cfg),
+		SystemConfig: NewSystemConfigClient(cfg),
+		User:         NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		User.
+//		Captcha.
 //		Query().
 //		Count(ctx)
 //
@@ -119,7 +131,189 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Captcha.Use(hooks...)
+	c.SystemConfig.Use(hooks...)
 	c.User.Use(hooks...)
+}
+
+// CaptchaClient is a client for the Captcha schema.
+type CaptchaClient struct {
+	config
+}
+
+// NewCaptchaClient returns a client for the Captcha from the given config.
+func NewCaptchaClient(c config) *CaptchaClient {
+	return &CaptchaClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `captcha.Hooks(f(g(h())))`.
+func (c *CaptchaClient) Use(hooks ...Hook) {
+	c.hooks.Captcha = append(c.hooks.Captcha, hooks...)
+}
+
+// Create returns a create builder for Captcha.
+func (c *CaptchaClient) Create() *CaptchaCreate {
+	mutation := newCaptchaMutation(c.config, OpCreate)
+	return &CaptchaCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Captcha entities.
+func (c *CaptchaClient) CreateBulk(builders ...*CaptchaCreate) *CaptchaCreateBulk {
+	return &CaptchaCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Captcha.
+func (c *CaptchaClient) Update() *CaptchaUpdate {
+	mutation := newCaptchaMutation(c.config, OpUpdate)
+	return &CaptchaUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CaptchaClient) UpdateOne(ca *Captcha) *CaptchaUpdateOne {
+	mutation := newCaptchaMutation(c.config, OpUpdateOne, withCaptcha(ca))
+	return &CaptchaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CaptchaClient) UpdateOneID(id int) *CaptchaUpdateOne {
+	mutation := newCaptchaMutation(c.config, OpUpdateOne, withCaptchaID(id))
+	return &CaptchaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Captcha.
+func (c *CaptchaClient) Delete() *CaptchaDelete {
+	mutation := newCaptchaMutation(c.config, OpDelete)
+	return &CaptchaDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *CaptchaClient) DeleteOne(ca *Captcha) *CaptchaDeleteOne {
+	return c.DeleteOneID(ca.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *CaptchaClient) DeleteOneID(id int) *CaptchaDeleteOne {
+	builder := c.Delete().Where(captcha.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CaptchaDeleteOne{builder}
+}
+
+// Query returns a query builder for Captcha.
+func (c *CaptchaClient) Query() *CaptchaQuery {
+	return &CaptchaQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Captcha entity by its id.
+func (c *CaptchaClient) Get(ctx context.Context, id int) (*Captcha, error) {
+	return c.Query().Where(captcha.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CaptchaClient) GetX(ctx context.Context, id int) *Captcha {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CaptchaClient) Hooks() []Hook {
+	return c.hooks.Captcha
+}
+
+// SystemConfigClient is a client for the SystemConfig schema.
+type SystemConfigClient struct {
+	config
+}
+
+// NewSystemConfigClient returns a client for the SystemConfig from the given config.
+func NewSystemConfigClient(c config) *SystemConfigClient {
+	return &SystemConfigClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `systemconfig.Hooks(f(g(h())))`.
+func (c *SystemConfigClient) Use(hooks ...Hook) {
+	c.hooks.SystemConfig = append(c.hooks.SystemConfig, hooks...)
+}
+
+// Create returns a create builder for SystemConfig.
+func (c *SystemConfigClient) Create() *SystemConfigCreate {
+	mutation := newSystemConfigMutation(c.config, OpCreate)
+	return &SystemConfigCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SystemConfig entities.
+func (c *SystemConfigClient) CreateBulk(builders ...*SystemConfigCreate) *SystemConfigCreateBulk {
+	return &SystemConfigCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SystemConfig.
+func (c *SystemConfigClient) Update() *SystemConfigUpdate {
+	mutation := newSystemConfigMutation(c.config, OpUpdate)
+	return &SystemConfigUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SystemConfigClient) UpdateOne(sc *SystemConfig) *SystemConfigUpdateOne {
+	mutation := newSystemConfigMutation(c.config, OpUpdateOne, withSystemConfig(sc))
+	return &SystemConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SystemConfigClient) UpdateOneID(id int) *SystemConfigUpdateOne {
+	mutation := newSystemConfigMutation(c.config, OpUpdateOne, withSystemConfigID(id))
+	return &SystemConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SystemConfig.
+func (c *SystemConfigClient) Delete() *SystemConfigDelete {
+	mutation := newSystemConfigMutation(c.config, OpDelete)
+	return &SystemConfigDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SystemConfigClient) DeleteOne(sc *SystemConfig) *SystemConfigDeleteOne {
+	return c.DeleteOneID(sc.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SystemConfigClient) DeleteOneID(id int) *SystemConfigDeleteOne {
+	builder := c.Delete().Where(systemconfig.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SystemConfigDeleteOne{builder}
+}
+
+// Query returns a query builder for SystemConfig.
+func (c *SystemConfigClient) Query() *SystemConfigQuery {
+	return &SystemConfigQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a SystemConfig entity by its id.
+func (c *SystemConfigClient) Get(ctx context.Context, id int) (*SystemConfig, error) {
+	return c.Query().Where(systemconfig.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SystemConfigClient) GetX(ctx context.Context, id int) *SystemConfig {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SystemConfigClient) Hooks() []Hook {
+	return c.hooks.SystemConfig
 }
 
 // UserClient is a client for the User schema.

@@ -28,8 +28,8 @@ const (
 	FieldAvatar = "avatar"
 	// FieldPhone holds the string denoting the phone field in the database.
 	FieldPhone = "phone"
-	// FieldEmail holds the string denoting the email field in the database.
-	FieldEmail = "email"
+	// FieldScore holds the string denoting the score field in the database.
+	FieldScore = "score"
 	// FieldToken holds the string denoting the token field in the database.
 	FieldToken = "token"
 	// Table holds the table name of the user in the database.
@@ -47,7 +47,7 @@ var Columns = []string{
 	FieldPassword,
 	FieldAvatar,
 	FieldPhone,
-	FieldEmail,
+	FieldScore,
 	FieldToken,
 }
 
@@ -70,6 +70,8 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultAvatar holds the default value on creation for the "avatar" field.
 	DefaultAvatar string
+	// DefaultScore holds the default value on creation for the "score" field.
+	DefaultScore int
 )
 
 // Role defines the type for the "role" enum field.

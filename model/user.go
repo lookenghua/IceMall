@@ -8,7 +8,7 @@ import (
 
 // CreateUser 创建用户
 func CreateUser(u ent.User) (*ent.User, error) {
-	return client.User.Create().SetUsername(u.Username).SetRole(u.Role).SetPassword(*u.Password).SetAvatar(u.Avatar).SetPhone(*u.Phone).SetEmail(*u.Email).Save(context.Background())
+	return client.User.Create().SetUsername(u.Username).SetRole(u.Role).SetPassword(*u.Password).SetAvatar(u.Avatar).SetPhone(*u.Phone).Save(context.Background())
 }
 
 // FindByUsername 根据用户名查询
