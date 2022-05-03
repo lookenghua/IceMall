@@ -77,3 +77,4 @@ fabric.properties
 bin/
 *.exe~
 log/
+tmp/
