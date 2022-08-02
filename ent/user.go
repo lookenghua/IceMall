@@ -44,6 +44,9 @@ type User struct {
 	// Score holds the value of the "score" field.
 	// 积分
 	Score int `json:"score,omitempty"`
+	// Sex holds the value of the "sex" field.
+	// 性别
+	Sex user.Sex `json:"sex,omitempty"`
 	// Token holds the value of the "token" field.
 	// 登录token
 	Token *string `json:"token,omitempty"`
@@ -56,7 +59,7 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case user.FieldID, user.FieldScore:
 			values[i] = new(sql.NullInt64)
-		case user.FieldUsername, user.FieldRole, user.FieldPassword, user.FieldAvatar, user.FieldPhone, user.FieldToken:
+		case user.FieldUsername, user.FieldRole, user.FieldPassword, user.FieldAvatar, user.FieldPhone, user.FieldSex, user.FieldToken:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -138,6 +141,12 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				u.Score = int(value.Int64)
 			}
+		case user.FieldSex:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field sex", values[i])
+			} else if value.Valid {
+				u.Sex = user.Sex(value.String)
+			}
 		case user.FieldToken:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field token", values[i])
@@ -197,6 +206,8 @@ func (u *User) String() string {
 	}
 	builder.WriteString(", score=")
 	builder.WriteString(fmt.Sprintf("%v", u.Score))
+	builder.WriteString(", sex=")
+	builder.WriteString(fmt.Sprintf("%v", u.Sex))
 	if v := u.Token; v != nil {
 		builder.WriteString(", token=")
 		builder.WriteString(*v)

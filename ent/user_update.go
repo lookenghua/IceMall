@@ -161,6 +161,12 @@ func (uu *UserUpdate) ClearScore() *UserUpdate {
 	return uu
 }
 
+// SetSex sets the "sex" field.
+func (uu *UserUpdate) SetSex(u user.Sex) *UserUpdate {
+	uu.mutation.SetSex(u)
+	return uu
+}
+
 // SetToken sets the "token" field.
 func (uu *UserUpdate) SetToken(s string) *UserUpdate {
 	uu.mutation.SetToken(s)
@@ -260,6 +266,11 @@ func (uu *UserUpdate) check() error {
 	if v, ok := uu.mutation.Role(); ok {
 		if err := user.RoleValidator(v); err != nil {
 			return &ValidationError{Name: "role", err: fmt.Errorf(`ent: validator failed for field "User.role": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.Sex(); ok {
+		if err := user.SexValidator(v); err != nil {
+			return &ValidationError{Name: "sex", err: fmt.Errorf(`ent: validator failed for field "User.sex": %w`, err)}
 		}
 	}
 	return nil
@@ -375,6 +386,13 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Column: user.FieldScore,
+		})
+	}
+	if value, ok := uu.mutation.Sex(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: user.FieldSex,
 		})
 	}
 	if value, ok := uu.mutation.Token(); ok {
@@ -542,6 +560,12 @@ func (uuo *UserUpdateOne) ClearScore() *UserUpdateOne {
 	return uuo
 }
 
+// SetSex sets the "sex" field.
+func (uuo *UserUpdateOne) SetSex(u user.Sex) *UserUpdateOne {
+	uuo.mutation.SetSex(u)
+	return uuo
+}
+
 // SetToken sets the "token" field.
 func (uuo *UserUpdateOne) SetToken(s string) *UserUpdateOne {
 	uuo.mutation.SetToken(s)
@@ -648,6 +672,11 @@ func (uuo *UserUpdateOne) check() error {
 	if v, ok := uuo.mutation.Role(); ok {
 		if err := user.RoleValidator(v); err != nil {
 			return &ValidationError{Name: "role", err: fmt.Errorf(`ent: validator failed for field "User.role": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.Sex(); ok {
+		if err := user.SexValidator(v); err != nil {
+			return &ValidationError{Name: "sex", err: fmt.Errorf(`ent: validator failed for field "User.sex": %w`, err)}
 		}
 	}
 	return nil
@@ -780,6 +809,13 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Column: user.FieldScore,
+		})
+	}
+	if value, ok := uuo.mutation.Sex(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: user.FieldSex,
 		})
 	}
 	if value, ok := uuo.mutation.Token(); ok {

@@ -12,12 +12,62 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// Aftermarket is the client for interacting with the Aftermarket builders.
+	Aftermarket *AftermarketClient
+	// Annex is the client for interacting with the Annex builders.
+	Annex *AnnexClient
 	// Captcha is the client for interacting with the Captcha builders.
 	Captcha *CaptchaClient
+	// CategoryBanner is the client for interacting with the CategoryBanner builders.
+	CategoryBanner *CategoryBannerClient
+	// DataDictionaryKey is the client for interacting with the DataDictionaryKey builders.
+	DataDictionaryKey *DataDictionaryKeyClient
+	// DataDictionaryValue is the client for interacting with the DataDictionaryValue builders.
+	DataDictionaryValue *DataDictionaryValueClient
+	// Feedback is the client for interacting with the Feedback builders.
+	Feedback *FeedbackClient
+	// HomeBanner is the client for interacting with the HomeBanner builders.
+	HomeBanner *HomeBannerClient
+	// Message is the client for interacting with the Message builders.
+	Message *MessageClient
+	// MessageRead is the client for interacting with the MessageRead builders.
+	MessageRead *MessageReadClient
+	// Notification is the client for interacting with the Notification builders.
+	Notification *NotificationClient
+	// Order is the client for interacting with the Order builders.
+	Order *OrderClient
+	// OrderItem is the client for interacting with the OrderItem builders.
+	OrderItem *OrderItemClient
+	// PopularSearch is the client for interacting with the PopularSearch builders.
+	PopularSearch *PopularSearchClient
+	// Product is the client for interacting with the Product builders.
+	Product *ProductClient
+	// ProductAttributeKey is the client for interacting with the ProductAttributeKey builders.
+	ProductAttributeKey *ProductAttributeKeyClient
+	// ProductAttributeValue is the client for interacting with the ProductAttributeValue builders.
+	ProductAttributeValue *ProductAttributeValueClient
+	// ProductBrowseHistory is the client for interacting with the ProductBrowseHistory builders.
+	ProductBrowseHistory *ProductBrowseHistoryClient
+	// ProductCategory is the client for interacting with the ProductCategory builders.
+	ProductCategory *ProductCategoryClient
+	// ProductCollection is the client for interacting with the ProductCollection builders.
+	ProductCollection *ProductCollectionClient
+	// ProductEvaluation is the client for interacting with the ProductEvaluation builders.
+	ProductEvaluation *ProductEvaluationClient
+	// ProductFocus is the client for interacting with the ProductFocus builders.
+	ProductFocus *ProductFocusClient
+	// ProductSpecs is the client for interacting with the ProductSpecs builders.
+	ProductSpecs *ProductSpecsClient
+	// ReceivingAddress is the client for interacting with the ReceivingAddress builders.
+	ReceivingAddress *ReceivingAddressClient
+	// ShoppingCart is the client for interacting with the ShoppingCart builders.
+	ShoppingCart *ShoppingCartClient
 	// SystemConfig is the client for interacting with the SystemConfig builders.
 	SystemConfig *SystemConfigClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserIntegral is the client for interacting with the UserIntegral builders.
+	UserIntegral *UserIntegralClient
 
 	// lazily loaded.
 	client     *Client
@@ -153,9 +203,34 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.Aftermarket = NewAftermarketClient(tx.config)
+	tx.Annex = NewAnnexClient(tx.config)
 	tx.Captcha = NewCaptchaClient(tx.config)
+	tx.CategoryBanner = NewCategoryBannerClient(tx.config)
+	tx.DataDictionaryKey = NewDataDictionaryKeyClient(tx.config)
+	tx.DataDictionaryValue = NewDataDictionaryValueClient(tx.config)
+	tx.Feedback = NewFeedbackClient(tx.config)
+	tx.HomeBanner = NewHomeBannerClient(tx.config)
+	tx.Message = NewMessageClient(tx.config)
+	tx.MessageRead = NewMessageReadClient(tx.config)
+	tx.Notification = NewNotificationClient(tx.config)
+	tx.Order = NewOrderClient(tx.config)
+	tx.OrderItem = NewOrderItemClient(tx.config)
+	tx.PopularSearch = NewPopularSearchClient(tx.config)
+	tx.Product = NewProductClient(tx.config)
+	tx.ProductAttributeKey = NewProductAttributeKeyClient(tx.config)
+	tx.ProductAttributeValue = NewProductAttributeValueClient(tx.config)
+	tx.ProductBrowseHistory = NewProductBrowseHistoryClient(tx.config)
+	tx.ProductCategory = NewProductCategoryClient(tx.config)
+	tx.ProductCollection = NewProductCollectionClient(tx.config)
+	tx.ProductEvaluation = NewProductEvaluationClient(tx.config)
+	tx.ProductFocus = NewProductFocusClient(tx.config)
+	tx.ProductSpecs = NewProductSpecsClient(tx.config)
+	tx.ReceivingAddress = NewReceivingAddressClient(tx.config)
+	tx.ShoppingCart = NewShoppingCartClient(tx.config)
 	tx.SystemConfig = NewSystemConfigClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserIntegral = NewUserIntegralClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -165,7 +240,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Captcha.QueryXXX(), the query will be executed
+// applies a query, for example: Aftermarket.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

@@ -5,9 +5,34 @@ package ent
 import (
 	"errors"
 	"fmt"
+	"ice-mall/ent/aftermarket"
+	"ice-mall/ent/annex"
 	"ice-mall/ent/captcha"
+	"ice-mall/ent/categorybanner"
+	"ice-mall/ent/datadictionarykey"
+	"ice-mall/ent/datadictionaryvalue"
+	"ice-mall/ent/feedback"
+	"ice-mall/ent/homebanner"
+	"ice-mall/ent/message"
+	"ice-mall/ent/messageread"
+	"ice-mall/ent/notification"
+	"ice-mall/ent/order"
+	"ice-mall/ent/orderitem"
+	"ice-mall/ent/popularsearch"
+	"ice-mall/ent/product"
+	"ice-mall/ent/productattributekey"
+	"ice-mall/ent/productattributevalue"
+	"ice-mall/ent/productbrowsehistory"
+	"ice-mall/ent/productcategory"
+	"ice-mall/ent/productcollection"
+	"ice-mall/ent/productevaluation"
+	"ice-mall/ent/productfocus"
+	"ice-mall/ent/productspecs"
+	"ice-mall/ent/receivingaddress"
+	"ice-mall/ent/shoppingcart"
 	"ice-mall/ent/systemconfig"
 	"ice-mall/ent/user"
+	"ice-mall/ent/userintegral"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -31,9 +56,34 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		captcha.Table:      captcha.ValidColumn,
-		systemconfig.Table: systemconfig.ValidColumn,
-		user.Table:         user.ValidColumn,
+		aftermarket.Table:           aftermarket.ValidColumn,
+		annex.Table:                 annex.ValidColumn,
+		captcha.Table:               captcha.ValidColumn,
+		categorybanner.Table:        categorybanner.ValidColumn,
+		datadictionarykey.Table:     datadictionarykey.ValidColumn,
+		datadictionaryvalue.Table:   datadictionaryvalue.ValidColumn,
+		feedback.Table:              feedback.ValidColumn,
+		homebanner.Table:            homebanner.ValidColumn,
+		message.Table:               message.ValidColumn,
+		messageread.Table:           messageread.ValidColumn,
+		notification.Table:          notification.ValidColumn,
+		order.Table:                 order.ValidColumn,
+		orderitem.Table:             orderitem.ValidColumn,
+		popularsearch.Table:         popularsearch.ValidColumn,
+		product.Table:               product.ValidColumn,
+		productattributekey.Table:   productattributekey.ValidColumn,
+		productattributevalue.Table: productattributevalue.ValidColumn,
+		productbrowsehistory.Table:  productbrowsehistory.ValidColumn,
+		productcategory.Table:       productcategory.ValidColumn,
+		productcollection.Table:     productcollection.ValidColumn,
+		productevaluation.Table:     productevaluation.ValidColumn,
+		productfocus.Table:          productfocus.ValidColumn,
+		productspecs.Table:          productspecs.ValidColumn,
+		receivingaddress.Table:      receivingaddress.ValidColumn,
+		shoppingcart.Table:          shoppingcart.ValidColumn,
+		systemconfig.Table:          systemconfig.ValidColumn,
+		user.Table:                  user.ValidColumn,
+		userintegral.Table:          userintegral.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

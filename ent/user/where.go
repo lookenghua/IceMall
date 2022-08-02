@@ -1007,6 +1007,54 @@ func ScoreNotNil() predicate.User {
 	})
 }
 
+// SexEQ applies the EQ predicate on the "sex" field.
+func SexEQ(v Sex) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSex), v))
+	})
+}
+
+// SexNEQ applies the NEQ predicate on the "sex" field.
+func SexNEQ(v Sex) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSex), v))
+	})
+}
+
+// SexIn applies the In predicate on the "sex" field.
+func SexIn(vs ...Sex) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSex), v...))
+	})
+}
+
+// SexNotIn applies the NotIn predicate on the "sex" field.
+func SexNotIn(vs ...Sex) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSex), v...))
+	})
+}
+
 // TokenEQ applies the EQ predicate on the "token" field.
 func TokenEQ(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {

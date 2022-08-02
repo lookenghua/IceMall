@@ -30,6 +30,8 @@ const (
 	FieldPhone = "phone"
 	// FieldScore holds the string denoting the score field in the database.
 	FieldScore = "score"
+	// FieldSex holds the string denoting the sex field in the database.
+	FieldSex = "sex"
 	// FieldToken holds the string denoting the token field in the database.
 	FieldToken = "token"
 	// Table holds the table name of the user in the database.
@@ -48,6 +50,7 @@ var Columns = []string{
 	FieldAvatar,
 	FieldPhone,
 	FieldScore,
+	FieldSex,
 	FieldToken,
 }
 
@@ -94,5 +97,29 @@ func RoleValidator(r Role) error {
 		return nil
 	default:
 		return fmt.Errorf("user: invalid enum value for role field: %q", r)
+	}
+}
+
+// Sex defines the type for the "sex" enum field.
+type Sex string
+
+// Sex values.
+const (
+	Sex0 Sex = "0"
+	Sex1 Sex = "1"
+	Sex2 Sex = "2"
+)
+
+func (s Sex) String() string {
+	return string(s)
+}
+
+// SexValidator is a validator for the "sex" field enum values. It is called by the builders before save.
+func SexValidator(s Sex) error {
+	switch s {
+	case Sex0, Sex1, Sex2:
+		return nil
+	default:
+		return fmt.Errorf("user: invalid enum value for sex field: %q", s)
 	}
 }

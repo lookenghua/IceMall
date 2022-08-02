@@ -130,6 +130,12 @@ func (uc *UserCreate) SetNillableScore(i *int) *UserCreate {
 	return uc
 }
 
+// SetSex sets the "sex" field.
+func (uc *UserCreate) SetSex(u user.Sex) *UserCreate {
+	uc.mutation.SetSex(u)
+	return uc
+}
+
 // SetToken sets the "token" field.
 func (uc *UserCreate) SetToken(s string) *UserCreate {
 	uc.mutation.SetToken(s)
@@ -261,6 +267,14 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.Avatar(); !ok {
 		return &ValidationError{Name: "avatar", err: errors.New(`ent: missing required field "User.avatar"`)}
 	}
+	if _, ok := uc.mutation.Sex(); !ok {
+		return &ValidationError{Name: "sex", err: errors.New(`ent: missing required field "User.sex"`)}
+	}
+	if v, ok := uc.mutation.Sex(); ok {
+		if err := user.SexValidator(v); err != nil {
+			return &ValidationError{Name: "sex", err: fmt.Errorf(`ent: validator failed for field "User.sex": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -365,6 +379,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldScore,
 		})
 		_node.Score = value
+	}
+	if value, ok := uc.mutation.Sex(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: user.FieldSex,
+		})
+		_node.Sex = value
 	}
 	if value, ok := uc.mutation.Token(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

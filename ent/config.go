@@ -24,9 +24,34 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
-	Captcha      []ent.Hook
-	SystemConfig []ent.Hook
-	User         []ent.Hook
+	Aftermarket           []ent.Hook
+	Annex                 []ent.Hook
+	Captcha               []ent.Hook
+	CategoryBanner        []ent.Hook
+	DataDictionaryKey     []ent.Hook
+	DataDictionaryValue   []ent.Hook
+	Feedback              []ent.Hook
+	HomeBanner            []ent.Hook
+	Message               []ent.Hook
+	MessageRead           []ent.Hook
+	Notification          []ent.Hook
+	Order                 []ent.Hook
+	OrderItem             []ent.Hook
+	PopularSearch         []ent.Hook
+	Product               []ent.Hook
+	ProductAttributeKey   []ent.Hook
+	ProductAttributeValue []ent.Hook
+	ProductBrowseHistory  []ent.Hook
+	ProductCategory       []ent.Hook
+	ProductCollection     []ent.Hook
+	ProductEvaluation     []ent.Hook
+	ProductFocus          []ent.Hook
+	ProductSpecs          []ent.Hook
+	ReceivingAddress      []ent.Hook
+	ShoppingCart          []ent.Hook
+	SystemConfig          []ent.Hook
+	User                  []ent.Hook
+	UserIntegral          []ent.Hook
 }
 
 // Options applies the options on the config object.
