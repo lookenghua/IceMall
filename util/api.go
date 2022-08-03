@@ -2,11 +2,12 @@ package util
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
 	"ice-mall/ent"
+	"reflect"
 )
-import . "ice-mall/common/validation"
 
 // 错误代码
 const (
@@ -21,6 +22,7 @@ const (
 	CreateTokenError                      // 创建token失败
 	SaveDataError                         // 保存数据失败
 	IllegalToken                          // 非法token
+	AuthorityNotRightError                // 权限不正确
 )
 
 // ApiUtil API工具
@@ -45,10 +47,25 @@ func (app *ApiUtil) ValidateBody(data interface{}) error {
 		}
 
 	}
-	errors := ValidateStruct(data)
-	if errors != nil {
-		return fiber.NewError(ValidateError, *errors)
-
+	message := ""
+	validate := validator.New()
+	err := validate.Struct(data)
+	if err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			typeofInter := reflect.TypeOf(data)
+			if typeofInter.Kind() == reflect.Ptr {
+				typeofInter = typeofInter.Elem()
+			}
+			if interType, ok := typeofInter.FieldByName(err.Field()); ok {
+				jsonTag := interType.Tag.Get("json")
+				var tag = err.Tag()
+				switch tag {
+				case "required":
+					message = fmt.Sprintf("缺少%s参数", jsonTag)
+				}
+				return fiber.NewError(ValidateError, message)
+			}
+		}
 	}
 	return nil
 }
