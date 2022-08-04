@@ -61,6 +61,8 @@ func InitRouter() *fiber.App {
 	{
 		api := app.Group("/api")
 		apiV1 := api.Group("/v1")
+		// 管理员登录
+		apiV1.Post("/admin/token", v1.LoginAdmin)
 		// 创建用户
 		apiV1.Post("/user", v1.CreateUser)
 		// 用户登录
