@@ -71,19 +71,22 @@
     </div>
   </div>
 </template>
-
+<script>
+export default {
+  name: "LoginPage",
+};
+</script>
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useLocalStorage } from "@/hooks/storage.js";
-import init, { md5encrypt } from "wasm-utils";
+import init, { md5encrypt } from "../../../../packages/wasm-utils/wasm_utils";
 import { useUserStore } from "@/store/modules/user";
 import { useRouter } from "vue-router";
-
+init();
 const formRef = ref(null);
 const rememberPass = ref(false);
 const loading = ref(false);
 
-init();
 const userStore = useUserStore();
 const router = useRouter();
 const accountStorage = useLocalStorage("account");

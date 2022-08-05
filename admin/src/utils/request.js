@@ -1,7 +1,7 @@
 import { HttpClient, HttpFetchBackend, setupConfig } from "@ngify/http";
 import { catchError, finalize, tap, throwError } from "rxjs";
 import { getToken } from "@/utils/auth";
-
+import { createDiscreteApi, lightTheme } from "naive-ui";
 setupConfig({
   backend: new HttpFetchBackend(),
 });
@@ -30,8 +30,14 @@ const request = new HttpClient([
   },
   {
     intercept(req, next) {
+      const { message } = createDiscreteApi(["message"], {
+        configProviderProps: {
+          theme: lightTheme,
+        },
+      });
       const started = Date.now();
       let ok;
+      message.loading("正在请求...");
       return next.handle(req).pipe(
         tap(
           // Succeeds when there is a response; ignore other events
@@ -39,6 +45,8 @@ const request = new HttpClient([
             ok = "success";
             const body = res.body;
             if (!body.success) {
+              message.destroyAll();
+              message.error(res.errorMessage || "服务器错误");
               throw new Error(JSON.stringify(body));
             }
           },

@@ -10,6 +10,7 @@
 
 <script setup>
 import { zhCN, dateZhCN } from "naive-ui";
+
 /**
  * js 文件下使用这个做类型提示
  * @type import('naive-ui').GlobalThemeOverrides

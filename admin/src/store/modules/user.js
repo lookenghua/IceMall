@@ -31,7 +31,9 @@ export const useUserStore = defineStore("user", {
     },
     // 设置管理员信息
     setUserInfo(data) {
-      console.log(data);
+      if (data == null) {
+        this.token = "";
+      }
       this.userInfo = data;
     },
     // 退出登录

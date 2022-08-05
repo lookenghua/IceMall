@@ -11,7 +11,7 @@
   >
     <div class="logo-area flex">
       <img src="../../assets/images/logo.png" alt="" class="logo" />
-      <span class="title">博客管理后台</span>
+      <span class="title">商城管理后台</span>
     </div>
     <n-menu
       :collapsed="collapsed"

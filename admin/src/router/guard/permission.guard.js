@@ -32,6 +32,8 @@ export function createPermissionGuard(router) {
           const res = await getCurrentAdminInfo().toPromise();
           userStore.setUserInfo(res.data);
         } catch (e) {
+          userStore.setUserInfo(null);
+          next({ path: "/login" });
           console.error(e);
         } finally {
           NProgress.inc();
