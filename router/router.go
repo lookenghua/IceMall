@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/goccy/go-json"
+	v1 "ice-mall/router/api/v1"
 	"ice-mall/router/guard"
 	. "ice-mall/router/middleware"
 )
@@ -13,7 +14,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	v1 "ice-mall/router/api/v1"
 )
 
 // InitRouter 初始化路由
@@ -61,14 +61,23 @@ func InitRouter() *fiber.App {
 	{
 		api := app.Group("/api")
 		apiV1 := api.Group("/v1")
-		// 管理员登录
-		apiV1.Post("/admin/token", v1.LoginAdmin)
-		// 创建用户
-		apiV1.Post("/user", v1.CreateUser)
-		// 用户登录
-		apiV1.Post("/user/token", v1.LoginUser)
-		// 获取用户登录信息
-		apiV1.Get("/user", guard.UserGuard, v1.GetCurrentUserInfo)
+		// 登录注册
+		{
+			// 管理员登录
+			apiV1.Post("/admin/token", v1.LoginAdmin)
+			// 创建用户
+			apiV1.Post("/user", v1.CreateUser)
+			// 用户登录
+			apiV1.Post("/user/token", v1.LoginUser)
+			// 获取用户登录信息
+			apiV1.Get("/user", guard.UserGuard, v1.GetCurrentUserInfo)
+		}
+		// 商品
+		{
+			// 创建商品
+			apiV1.Post("/product", v1.CreateProduct)
+		}
+
 	}
 
 	return app

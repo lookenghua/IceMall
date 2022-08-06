@@ -5,7 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
-	"ice-mall/ent"
+	"ice-mall/schema"
 	"reflect"
 )
 
@@ -88,13 +88,13 @@ func (app *ApiUtil) Fail(errorCode int, errorMessage string) error {
 }
 
 // SetUserInfo 设置用户信息
-func (app *ApiUtil) SetUserInfo(user *ent.User) {
+func (app *ApiUtil) SetUserInfo(user *schema.User) {
 	app.Ctx.Locals("user", user)
 }
 
 // GetUserInfo 获取用户信息
-func (app *ApiUtil) GetUserInfo() *ent.User {
-	return app.Ctx.Locals("user").(*ent.User)
+func (app *ApiUtil) GetUserInfo() *schema.User {
+	return app.Ctx.Locals("user").(*schema.User)
 }
 
 // Transform 数据转换

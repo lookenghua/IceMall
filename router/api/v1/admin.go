@@ -3,7 +3,7 @@ package v1
 import (
 	"github.com/gofiber/fiber/v2"
 	. "ice-mall/common/dto"
-	"ice-mall/ent/user"
+	"ice-mall/schema/user"
 	"ice-mall/service"
 	. "ice-mall/util"
 )
@@ -32,7 +32,7 @@ func LoginAdmin(c *fiber.Ctx) error {
 		return apiUtil.Fail(AuthorityNotRightError, "当前管理员不存在")
 	}
 	// 判断密码是否正确
-	if *findUser.Password != data.Password {
+	if findUser.Password != data.Password {
 		return apiUtil.Fail(PasswordNotMatchedError, "密码错误")
 	}
 	// 创建token

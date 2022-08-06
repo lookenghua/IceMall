@@ -39,7 +39,7 @@ func LoginUser(c *fiber.Ctx) error {
 	if user == nil {
 		return apiUtil.Fail(DataFoundError, "用户名不存在")
 	}
-	if *user.Password != data.Password {
+	if user.Password != data.Password {
 		return apiUtil.Fail(PasswordNotMatchedError, "密码错误")
 	}
 	// 创建token
