@@ -15,7 +15,7 @@ func UserGuard(c *fiber.Ctx) error {
 	if bearerToken == "" {
 		return apiUtil.Fail(fiber.StatusUnauthorized, "请先登录")
 	}
-	if !strings.HasPrefix(bearerToken, "bearer") {
+	if !strings.HasPrefix(strings.ToLower(bearerToken), "bearer") {
 		return apiUtil.Fail(util.IllegalToken, "token不合法")
 	}
 	var token = bearerToken[7:]

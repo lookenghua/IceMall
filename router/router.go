@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/goccy/go-json"
 	v1 "ice-mall/router/api/v1"
-	"ice-mall/router/guard"
+	. "ice-mall/router/guard"
 	. "ice-mall/router/middleware"
 )
 import (
@@ -70,12 +70,12 @@ func InitRouter() *fiber.App {
 			// 用户登录
 			apiV1.Post("/user/token", v1.LoginUser)
 			// 获取用户登录信息
-			apiV1.Get("/user", guard.UserGuard, v1.GetCurrentUserInfo)
+			apiV1.Get("/user", UserGuard, v1.GetCurrentUserInfo)
 		}
 		// 商品
 		{
 			// 创建商品
-			apiV1.Post("/product", v1.CreateProduct)
+			apiV1.Post("/product", UserGuard, v1.CreateProduct)
 		}
 
 	}
