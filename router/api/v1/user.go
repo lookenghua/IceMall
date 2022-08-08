@@ -11,14 +11,10 @@ import (
 // CreateUser 创建用户
 func CreateUser(c *fiber.Ctx) error {
 	apiUtil := ApiUtil{Ctx: c}
-	data := new(CreateUserDto)
-	err := apiUtil.ValidateBody(data)
-	if err != nil {
-		return apiUtil.Fail(ValidateError, err.Error())
-	}
-	newUser, createErr := service.CreateUser(data)
+	data := GetJsonBody[CreateUserDto](c)
+	newUser, createErr := service.CreateUser(&data)
 	if createErr != nil {
-		return apiUtil.Fail(CreateError, err.Error())
+		return apiUtil.Fail(CreateError, createErr.Error())
 	}
 	return apiUtil.Success(newUser)
 }
@@ -26,11 +22,7 @@ func CreateUser(c *fiber.Ctx) error {
 // LoginUser 用户登录
 func LoginUser(c *fiber.Ctx) error {
 	apiUtil := ApiUtil{Ctx: c}
-	data := new(LoginUserDto)
-	err := apiUtil.ValidateBody(data)
-	if err != nil {
-		return apiUtil.Fail(ValidateError, err.Error())
-	}
+	data := GetJsonBody[LoginUserDto](c)
 	// 判断用户存在和密码正确性
 	user, findErr := service.FindByUsername(data.Username)
 	if findErr != nil {

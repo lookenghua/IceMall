@@ -1,10 +1,15 @@
 package router
 
 import (
+	"fmt"
 	"github.com/goccy/go-json"
+	. "ice-mall/common/dto"
+	"ice-mall/config"
 	v1 "ice-mall/router/api/v1"
 	. "ice-mall/router/guard"
 	. "ice-mall/router/middleware"
+	"ice-mall/util"
+	"os"
 )
 import (
 	"github.com/gofiber/fiber/v2"
@@ -26,6 +31,20 @@ func InitRouter() *fiber.App {
 
 	// 全局中间件
 	{
+		// 创建静态资源托管
+		{
+			app.Static("/file", config.StoragePath)
+			if !util.DirExists(config.StoragePath) {
+				fmt.Println("创建uploads文件夹")
+				err := os.Mkdir(config.StoragePath, os.ModePerm)
+				if err != nil {
+					fmt.Println("创建uploads文件夹失败", err.Error())
+				} else {
+					fmt.Println("创建uploads文件夹成功")
+				}
+			}
+		}
+
 		// 异常中间件
 		app.Use(recover.New())
 		// 压缩中间件
@@ -64,20 +83,23 @@ func InitRouter() *fiber.App {
 		// 登录注册
 		{
 			// 管理员登录
-			apiV1.Post("/admin/token", v1.LoginAdmin)
+			apiV1.Post("/admin/token", ValidateJsonBody[LoginAdminDto], v1.LoginAdmin)
 			// 创建用户
-			apiV1.Post("/user", v1.CreateUser)
+			apiV1.Post("/user", ValidateJsonBody[CreateUserDto], v1.CreateUser)
 			// 用户登录
-			apiV1.Post("/user/token", v1.LoginUser)
+			apiV1.Post("/user/token", ValidateJsonBody[LoginUserDto], v1.LoginUser)
 			// 获取用户登录信息
 			apiV1.Get("/user", UserGuard, v1.GetCurrentUserInfo)
 		}
 		// 商品
 		{
 			// 创建商品
-			apiV1.Post("/product", UserGuard, v1.CreateProduct)
+			apiV1.Post("/product", UserGuard, ValidateJsonBody[CreateProductDto], v1.CreateProduct)
 		}
-
+		// 工具
+		{
+			apiV1.Post("/upload", UserGuard, ValidateJsonBody[UploadFileDto], v1.UploadFile)
+		}
 	}
 
 	return app

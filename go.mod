@@ -1,11 +1,12 @@
 module ice-mall
 
-go 1.17
+go 1.18
 
 require (
 	github.com/alibabacloud-go/darabonba-openapi v0.1.18
 	github.com/alibabacloud-go/dysmsapi-20170525/v2 v2.0.9
 	github.com/alibabacloud-go/tea v1.1.17
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/goccy/go-json v0.9.7

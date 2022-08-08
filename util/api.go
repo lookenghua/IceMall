@@ -23,6 +23,7 @@ const (
 	SaveDataError                         // 保存数据失败
 	IllegalToken                          // 非法token
 	AuthorityNotRightError                // 权限不正确
+	UploadError                           // 上传失败
 )
 
 // ApiUtil API工具
@@ -104,4 +105,9 @@ func (app *ApiUtil) Transform(from interface{}, to interface{}) {
 		fmt.Printf("转换类型失败")
 		return
 	}
+}
+
+// GetJsonBody 获取参数
+func GetJsonBody[BodyType any](c *fiber.Ctx) BodyType {
+	return c.UserContext().Value("jsonBody").(BodyType)
 }

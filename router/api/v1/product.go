@@ -7,27 +7,17 @@ import (
 	. "ice-mall/util"
 )
 
+// CreateProduct 创建商品接口
 func CreateProduct(c *fiber.Ctx) error {
 	apiUtil := ApiUtil{
 		Ctx: c,
 	}
-	data := new(CreateProductDto)
-	// 校验
-	{
-		err := apiUtil.ValidateBody(data)
-		if err != nil {
-			return apiUtil.Fail(ValidateError, err.Error())
-		}
-		err1 := data.Validate()
-		if err1 != nil {
-			return apiUtil.Fail(ValidateError, err.Error())
-		}
-	}
+	data := GetJsonBody[CreateProductDto](c)
 	userInfo := apiUtil.GetUserInfo()
 	userId := userInfo.ID
 	// 创建商品
 	{
-		product, err := service.CreateProduct(*data, userId)
+		product, err := service.CreateProduct(data, userId)
 		if err != nil {
 			return apiUtil.Fail(CreateError, err.Error())
 		}
