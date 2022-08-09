@@ -13,7 +13,7 @@ func LoginAdmin(c *fiber.Ctx) error {
 	apiUtil := ApiUtil{
 		Ctx: c,
 	}
-	data := GetJsonBody[LoginAdminDto](c)
+	data := GetBody[LoginAdminDto](c)
 	// 查询用户
 	findUser, findErr := service.FindByUsername(data.Username)
 	if findErr != nil {

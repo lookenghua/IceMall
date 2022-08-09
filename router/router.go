@@ -27,6 +27,7 @@ func InitRouter() *fiber.App {
 	app := fiber.New(fiber.Config{
 		JSONEncoder: json.Marshal,
 		JSONDecoder: json.Unmarshal,
+		BodyLimit:   50 * 1024 * 1024, // 50M限制
 	})
 
 	// 全局中间件
@@ -83,22 +84,22 @@ func InitRouter() *fiber.App {
 		// 登录注册
 		{
 			// 管理员登录
-			apiV1.Post("/admin/token", ValidateJsonBody[LoginAdminDto], v1.LoginAdmin)
+			apiV1.Post("/admin/token", ValidateBody[LoginAdminDto], v1.LoginAdmin)
 			// 创建用户
-			apiV1.Post("/user", ValidateJsonBody[CreateUserDto], v1.CreateUser)
+			apiV1.Post("/user", ValidateBody[CreateUserDto], v1.CreateUser)
 			// 用户登录
-			apiV1.Post("/user/token", ValidateJsonBody[LoginUserDto], v1.LoginUser)
+			apiV1.Post("/user/token", ValidateBody[LoginUserDto], v1.LoginUser)
 			// 获取用户登录信息
 			apiV1.Get("/user", UserGuard, v1.GetCurrentUserInfo)
 		}
 		// 商品
 		{
 			// 创建商品
-			apiV1.Post("/product", UserGuard, ValidateJsonBody[CreateProductDto], v1.CreateProduct)
+			apiV1.Post("/product", UserGuard, ValidateBody[CreateProductDto], v1.CreateProduct)
 		}
 		// 工具
 		{
-			apiV1.Post("/upload", UserGuard, ValidateJsonBody[UploadFileDto], v1.UploadFile)
+			apiV1.Post("/upload", UserGuard, ValidateBody[UploadFileDto], v1.UploadFile)
 		}
 	}
 

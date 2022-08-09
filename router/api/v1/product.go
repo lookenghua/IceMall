@@ -12,7 +12,7 @@ func CreateProduct(c *fiber.Ctx) error {
 	apiUtil := ApiUtil{
 		Ctx: c,
 	}
-	data := GetJsonBody[CreateProductDto](c)
+	data := GetBody[CreateProductDto](c)
 	userInfo := apiUtil.GetUserInfo()
 	userId := userInfo.ID
 	// 创建商品

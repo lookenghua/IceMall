@@ -9,12 +9,16 @@ import (
 	"reflect"
 )
 
-// ValidateJsonBody 校验参数
-func ValidateJsonBody[BodyType any](c *fiber.Ctx) error {
-	var body BodyType
+//
+func validate[ParseType any](c *fiber.Ctx, validateType string) error {
+	var body ParseType
 	// 校验body本身
 	{
-		err := c.BodyParser(&body)
+		var err error
+		if validateType == "body" {
+			err = c.BodyParser(&body)
+		}
+
 		if err != nil {
 			message := ""
 			validate := validator.New()
@@ -43,8 +47,6 @@ func ValidateJsonBody[BodyType any](c *fiber.Ctx) error {
 			}
 		}
 	}
-
-	fmt.Println()
 	// 使用内部自带函数
 	{
 		immutableV := reflect.ValueOf(&body).Elem()
@@ -64,9 +66,13 @@ func ValidateJsonBody[BodyType any](c *fiber.Ctx) error {
 			}
 		}
 	}
-
 	var userContext = c.UserContext()
-	var newUserContext = context.WithValue(userContext, "jsonBody", body)
+	var newUserContext = context.WithValue(userContext, "body", body)
 	c.SetUserContext(newUserContext)
 	return c.Next()
+}
+
+// ValidateBody 校验Body参数
+func ValidateBody[BodyType any](c *fiber.Ctx) error {
+	return validate[BodyType](c, "body")
 }

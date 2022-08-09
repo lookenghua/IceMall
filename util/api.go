@@ -107,7 +107,7 @@ func (app *ApiUtil) Transform(from interface{}, to interface{}) {
 	}
 }
 
-// GetJsonBody 获取参数
-func GetJsonBody[BodyType any](c *fiber.Ctx) BodyType {
-	return c.UserContext().Value("jsonBody").(BodyType)
+// GetBody 获取参数
+func GetBody[BodyType any](c *fiber.Ctx) BodyType {
+	return c.UserContext().Value("body").(BodyType)
 }
