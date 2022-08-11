@@ -5,6 +5,7 @@ import (
 )
 
 type Product struct {
+	MixinModel
 	Title          string                 `gorm:"not null;comment:商品名称" json:"title"`
 	BannerAnnexId  string                 `gorm:"comment:banner附件id" json:"bannerAnnexId"`
 	OriginalPrice  string                 `gorm:"default:0;comment:原价" json:"originalPrice"`
