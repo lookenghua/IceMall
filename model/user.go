@@ -1,6 +1,10 @@
 package model
 
-import "ice-mall/schema"
+import (
+	"errors"
+	"gorm.io/gorm"
+	"ice-mall/schema"
+)
 
 // CreateUser 创建用户
 func CreateUser(u schema.User) (schema.User, error) {
@@ -12,6 +16,9 @@ func CreateUser(u schema.User) (schema.User, error) {
 func FindByUsername(username string) (*schema.User, error) {
 	user := schema.User{}
 	result := client.Where("username = ?", username).First(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, result.Error
+	}
 	return &user, result.Error
 }
 
@@ -24,8 +31,11 @@ func UpdateToken(id uint, t string) (schema.User, error) {
 }
 
 // FindByToken 根据token查询用户
-func FindByToken(token string) (schema.User, error) {
+func FindByToken(token string) (*schema.User, error) {
 	user := schema.User{}
-	client.Where("token = ?", token).First(&user)
-	return user, nil
+	result := client.Where("token = ?", token).First(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, result.Error
+	}
+	return &user, result.Error
 }
