@@ -136,14 +136,14 @@ function submit(e) {
         username: modelRef.username,
         password: md5encrypt(modelRef.password),
       };
-      userStore.login(data).subscribe(
-        () => {
+      userStore
+        .login(data)
+        .then(() => {
           router.push("/");
-        },
-        (e) => {
+        })
+        .catch(() => {
           console.log(e);
-        }
-      );
+        });
     }
   });
 }
