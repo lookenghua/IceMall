@@ -117,5 +117,8 @@ function handleUpdateExpandedKeys(keys) {
   ::v-deep(.n-menu-item-content__icon) {
     color: white;
   }
+  ::v-deep(.n-layout-sider-scroll-container) {
+    overflow-x: hidden !important;
+  }
 }
 </style>

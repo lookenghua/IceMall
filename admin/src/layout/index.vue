@@ -1,8 +1,10 @@
 <template>
   <n-layout has-sider class="layout" position="absolute">
-    <LayoutSider />
+    <LayoutSider class="overflow-x-hidden" />
     <n-layout>
-      <n-layout-header> <LayoutHeader /></n-layout-header>
+      <n-layout-header class="sticky top-0 z-40">
+        <LayoutHeader
+      /></n-layout-header>
       <n-layout-content content-style="padding: 24px;" class="app-main">
         <router-view v-slot="{ Component }" v-if="appStore.showRouterView">
           <keep-alive :include="includes">

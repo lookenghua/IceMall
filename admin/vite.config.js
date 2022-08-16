@@ -8,12 +8,21 @@ import AutoImport from "unplugin-auto-import/vite";
 import Unocss from "unocss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import viteCompression from "vite-plugin-compression";
+import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import path from "path";
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
     Unocss(),
+    createSvgIconsPlugin({
+      // Specify the icon folder to be cached
+      iconDirs: [path.resolve("./src/assets/images/icons/svg/")],
+      // Specify symbolId format
+      symbolId: "icon-[dir]-[name]",
+    }),
     Components({
       resolvers: [NaiveUiResolver()],
       dts: true,
@@ -36,6 +45,24 @@ export default defineConfig({
     viteCompression(), // 压缩
     visualizer(), // 分析打包
   ],
+  build: {
+    target: "es2015",
+    cssTarget: "chrome80",
+    // minify: 'terser',
+    /**
+     * 当 minify=“minify:'terser'” 解开注释
+     * Uncomment when minify="minify:'terser'"
+     */
+    // terserOptions: {
+    //   compress: {
+    //     keep_infinity: true,
+    //     drop_console: VITE_DROP_CONSOLE,
+    //   },
+    // },
+    // Turning off brotliSize display can slightly reduce packaging time
+    brotliSize: false,
+    chunkSizeWarningLimit: 2000,
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -48,6 +75,11 @@ export default defineConfig({
         target: "http://localhost:6607/api",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+      "/uploads": {
+        target: "http://localhost:6607/file",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/uploads/, ""),
       },
     },
   },

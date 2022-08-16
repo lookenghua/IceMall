@@ -1,11 +1,10 @@
-const Layout = () => import("@/layout/index.vue");
-const homeRoute = {
+export default {
   path: "/",
-  component: Layout,
+  component: () => import("@/layout/index.vue"),
   name: "Home",
   meta: {
     title: "首页",
-    icon: "mdi-light:home",
+    icon: "dashboard",
     sort: 100,
   },
   children: [
@@ -14,7 +13,7 @@ const homeRoute = {
       name: "Dashboard",
       meta: {
         title: "Dashboard",
-        icon: "ant-design:dashboard-outlined",
+        icon: "dashboard",
         sort: 101,
         affix: true,
       },
@@ -22,5 +21,3 @@ const homeRoute = {
     },
   ],
 };
-
-export default homeRoute;
