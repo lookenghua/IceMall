@@ -34,7 +34,7 @@ func InitRouter() *fiber.App {
 	{
 		// 创建静态资源托管
 		{
-			app.Static("/file", config.StoragePath)
+			app.Static("/file", "./"+config.StoragePath)
 			if !util.DirExists(config.StoragePath) {
 				fmt.Println("创建uploads文件夹")
 				err := os.Mkdir(config.StoragePath, os.ModePerm)
